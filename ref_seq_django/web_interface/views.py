@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import UploadForm
+from django.core.servers.basehttp import FileWrapper
+
 import os
 
 
@@ -10,6 +12,7 @@ def index(request):
 
 
 def upload_file(request):
+
     if request.method == 'POST':
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -38,3 +41,15 @@ def process_file(filepath, extension):
     with open(filepath, 'r') as handle:
         line = handle.readline()
     return line
+
+
+def send_file(request, filename):
+    """
+    Send a file through Django without loading the whole file into
+    memory at once. The FileWrapper will turn the file object into an
+    iterator for chunks of 8KB.
+    """
+    wrapper = FileWrapper(file(filename))
+    response = HttpResponse(wrapper, content_type='application/pdf')
+    response['Content-Length'] = os.path.getsize(filename)
+    return response
