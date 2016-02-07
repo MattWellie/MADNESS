@@ -86,11 +86,6 @@ def check_file_type(file_name):
         return 'file error'
 
 
-def index(request):
-    document_list = created_documents.objects.order_by('-created_on')
-    return render(request, 'web_interface/app_homepage.html', {'document_list':document_list})
-
-
 def upload_file(request):
 
     if request.method == 'POST':
@@ -101,7 +96,8 @@ def upload_file(request):
             filepath = handle_uploaded_file(request.FILES['file'])
             run_parser(filepath)
             document_list = created_documents.objects.order_by('-created_on')
-            return render(request, 'web_interface/app_homepage.html', {'document_list':document_list})
+            return render(request, 'web_interface/app_homepage.html', {'form':UploadForm(),
+                                                                       'document_list':document_list})
     else:
         form = UploadForm()
 
@@ -131,5 +127,5 @@ def download(request, document_id):
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type='application/pdf')
     response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(document.location)
     return response

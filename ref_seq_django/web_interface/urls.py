@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from .views import index, upload_file, download
+from .views import upload_file, download
 
 appname = 'web_interface'
 urlpatterns = [
