@@ -104,7 +104,10 @@ def upload_file(request):
             return render(request, 'web_interface/app_homepage.html', {'document_list':document_list})
     else:
         form = UploadForm()
-    return render(request, 'web_interface/upload.html', {'form':form})
+
+    document_list = created_documents.objects.order_by('-created_on')
+    return render(request, 'web_interface/app_homepage.html', {'form':form,
+                                                               'document_list':document_list})
 
 
 def handle_uploaded_file(input_file):

@@ -2,9 +2,17 @@
 <h1>RefSeq application - Web interface</h1>
 
 
-<li><a href="/web_interface/upload">Create a new reference?</a></li>
+<li>Create a new reference?</li>
+<br>
+<form enctype="multipart/form-data"  action="/web_interface/upload/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit"/>
+</form>
+<br>
 {% if document_list %}
     <ul>
+        <h2>Available References</h2>
     {% for document in document_list %}
         <li><a href="/web_interface/download/{{document.id}}">{{ document.gene }}, {{document.transcript }}</a></li>
     {% endfor %}
