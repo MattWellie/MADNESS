@@ -1,9 +1,17 @@
-<body>
-    The file was uploaded successfully!
-    <br>
+<h1>Download your reference</h1>
 
-    <br>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-    {{ line }} has been converted into a reference sequence
+<form action="{% url 'web_interface:download' %}" method="post">
+
+    {% csrf_token %}
+    {% for choice in created_documents.all %}
+        <input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{choice.id}}"/>
+        <label for="choice{{forloop.counter}}">
+            {{choice.gene}}; {{choice.transcript}}
+        </label>
+        <br>
+    {% endfor %}
+    <input type="submit" value="Choose"/>
 </form>
-</body>
+

@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from .forms import UploadForm
 from .models import created_documents
 from django.core.servers.basehttp import FileWrapper
@@ -9,6 +10,7 @@ from reader import Reader
 from latex_writer import LatexWriter
 from subprocess import call
 import os, sys
+from datetime import datetime
 
 
 @property
@@ -37,8 +39,8 @@ def run_parser(filepath):
         dictionary  = lrg_reader.run()
         parser_details = lrg_reader.get_version
     parser_details = '{0} {1} {2}'.format(file_type.upper(), 'Parser:', parser_details)
-    files_created = {}
-    os.chdir(os.path.join('web_interface', 'output'))
+    os.chdir('web_interface')
+    os.chdir('output')
     for transcript in dictionary['transcripts']:
         input_reader = Reader()
         writer = LatexWriter()
@@ -51,11 +53,15 @@ def run_parser(filepath):
         file_name = transcript_accession
         latex_file, pdf_file = writer.run(input_list, file_name)
         call(["pdflatex", "-interaction=batchmode", latex_file])
-        save_as_model = created_documents(transcript=transcript_accession, location=pdf_file)
+        save_as_model = created_documents(transcript=transcript_accession,
+                                          location=pdf_file,
+                                          gene=dictionary['genename'],
+                                          created_on=datetime.now())
         save_as_model.save()
-        clean_up(os.getcwd())
     os.chdir(os.pardir) # Web interface
     os.chdir(os.pardir) # project level
+    clean_up(os.path.join('web_interface', 'output'))
+    clean_up(os.path.join('web_interface', 'input'))
 
 
 def clean_up(path):
@@ -81,8 +87,8 @@ def check_file_type(file_name):
 
 
 def index(request):
-    html = '<html><body>This is the ref seq home page</body></html>'
-    return HttpResponse(html)
+    document_list = created_documents.objects.order_by('-created_on')
+    return render(request, 'web_interface/app_homepage.html', {'document_list':document_list})
 
 
 def upload_file(request):
@@ -94,12 +100,8 @@ def upload_file(request):
             print >> sys.stderr, os.getcwd()
             filepath = handle_uploaded_file(request.FILES['file'])
             run_parser(filepath)
-            #wrapper = FileWrapper(file(filepath))
-            #response = HttpResponse(wrapper, content_type='application/pdf')
-            #response['Content-Length'] = os.path.getsize(filepath)
-            #response['Content-Disposition'] = 'attachment; filename="{}"'.format(filepath)
-            #return response
-            return render(request, 'web_interface/success.html', {'line':filepath})
+            document_list = created_documents.objects.order_by('-created_on')
+            return render(request, 'web_interface/app_homepage.html', {'document_list':document_list})
     else:
         form = UploadForm()
     return render(request, 'web_interface/upload.html', {'form':form})
@@ -114,14 +116,15 @@ def handle_uploaded_file(input_file):
     return filepath
 
 
-def download(request, filename):
+def download(request, document_id):
     """
     Send a file through Django without loading the whole file into
     memory at once. The FileWrapper will turn the file object into an
     iterator for chunks of 8KB.
     """
-    if request.method == 'POST':
-        pass
+
+    document = get_object_or_404(created_documents, pk=document_id)
+    filename = os.path.join('web_interface', 'output', document.location)
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type='application/pdf')
     response['Content-Length'] = os.path.getsize(filename)

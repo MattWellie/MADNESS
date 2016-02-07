@@ -1,8 +1,14 @@
-<head>RefSeq Web App</head>
-<body>
-    <h1>RefSeq application - Web interface</h1>
-    <ul/>
-    <form action="{% url 'web_interface:process' %}">
-        <input type=""
-    </form>
-</body>
+
+<h1>RefSeq application - Web interface</h1>
+
+
+<li><a href="/web_interface/upload">Create a new reference?</a></li>
+{% if document_list %}
+    <ul>
+    {% for document in document_list %}
+        <li><a href="/web_interface/download/{{document.id}}">{{ document.gene }}, {{document.transcript }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No references have been created yet.</p>
+{% endif %}

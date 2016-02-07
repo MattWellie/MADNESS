@@ -5,6 +5,6 @@ appname = 'web_interface'
 urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^upload/$', upload_file, name='upload'),
-    url(r'^download/$', download, name='download'),
+    url(r'^download/(?P<document_id>[0-9]+)$', download, name='download'),
 
 ]
