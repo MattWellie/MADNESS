@@ -127,5 +127,5 @@ def download(request, document_id):
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type='application/pdf')
     response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(document.location)
+    response['Content-Disposition'] = 'attachment; filename="{}{}"'.format(document.gene, document.location)
     return response
