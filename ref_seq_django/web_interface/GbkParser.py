@@ -42,18 +42,15 @@ class GbkParser:
         self.exons = []
         self.cds = []
         self.mrna = []
-        self.fileName = file_name
-        # Read in the specified input file into a variable
+        self.file_name = file_name
         try:
             self.transcriptdict = dict(transcripts={}, input=SeqIO.to_dict(SeqIO.parse(file_name, 'genbank')),
                                        pad=int(padding), pad_offset=int(padding) % 5)
             self.transcriptdict['refseqname'] = self.transcriptdict['input'].keys()[0]
             self.is_matt_awesome = True
-        except IOError as fileNotPresent:
-            print "The specified file cannot be located: " + fileNotPresent.filename
+        except IOError as FileNotPresent:
+            print "The specified file cannot be located: " + FileNotPresent.filename
             exit()
-            
-            
 
         assert self.transcriptdict['pad'] <= 2000, "Padding too large, please use a value below 2000 bases"
 

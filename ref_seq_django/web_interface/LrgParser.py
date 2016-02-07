@@ -33,11 +33,11 @@ class LrgParser:
     """
 
     def __init__(self, file_name, padding, trim_flanking):
-        self.fileName = file_name
+        self.file_name = file_name
         self.trim_flanking = trim_flanking
-        # Read in the specified input file into a variable
+        # Read the specified input file into a variable
         try:
-            self.tree = parse(self.fileName)
+            self.tree = parse(self.file_name)
             self.transcriptdict = {'transcripts': {},
                                    'root': self.tree.getroot(),
                                    'pad': int(padding),
@@ -74,6 +74,7 @@ class LrgParser:
         """
         return 'Version: {0}, Version Date: {1}'.format(str(__version__), __version_date__)
 
+
     # Grabs the sequence string from the <sequence/> tagged block
     def grab_element(self, path):
         """ Grabs specific element from the xml file from a provided path """
@@ -105,6 +106,7 @@ class LrgParser:
                                 self.transcriptdict['transcripts'][int(t_number)]['NP_number'] = protein_block.attrib['accession']
                         except KeyError:
                             print 'found redundant transcript'
+
 
     def get_exon_coords(self):
         """ Traverses the LRG ETree to find all the useful values
@@ -138,6 +140,7 @@ class LrgParser:
                 assert genomic_start >= 0, "Exon index out of bounds"
                 self.transcriptdict['transcripts'][t_number]["exons"][exon_number]['genomic_start'] = genomic_start
                 self.transcriptdict['transcripts'][t_number]["exons"][exon_number]['genomic_end'] = genomic_end
+
 
     def grab_exon_contents(self, genseq):
 
@@ -196,6 +199,7 @@ class LrgParser:
 
                 self.transcriptdict['transcripts'][transcript]["exons"][exon_number]['sequence'] = seq
 
+
     def get_protein_exons(self):
         """ Collects full protein sequence for the appropriate transcript """
         for item in self.transcriptdict['fixannot'].findall('transcript'):
@@ -206,6 +210,7 @@ class LrgParser:
             translation = coding_region.find('translation')
             sequence = translation.find('sequence').text
             self.transcriptdict['transcripts'][p_number]['protein_seq'] = sequence + '* '  # Stop codon
+
 
     def find_cds_delay(self, transcript):
         """ Method to find the actual start of the translated sequence
@@ -220,6 +225,7 @@ class LrgParser:
             elif g_stop > offset > g_start:
                 self.transcriptdict['transcripts'][transcript]['cds_offset'] = offset_total + (offset - g_start)
                 break
+
 
     def run(self):
         # Initial sequence grabbing and populating dictionaries

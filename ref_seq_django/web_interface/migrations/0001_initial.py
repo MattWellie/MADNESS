@@ -11,9 +11,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='input_documents',
+            name='created_documents',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('transcript', models.CharField(max_length=40)),
+                ('location', models.TextField()),
             ],
         ),
     ]

@@ -36,3 +36,12 @@ class LatexWriter:
         for line in self.input_list:
             print >> out, line
         print 'File written'
+
+
+    @property
+    def get_version(self):
+        """
+        Quick function to grab version details for final printing
+        :return:
+        """
+        return 'Version: {0}, Version Date: {1}'.format(str(__version__), __version_date__)

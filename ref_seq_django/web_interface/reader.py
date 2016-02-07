@@ -33,7 +33,6 @@ class Reader:
         self.transcriptdict = {}
         self.write_as_LaTex = True
         self.file_type = ''
-        self.filename = ''
         self.transcript = ''
         self.output_list = []
         self.amino_printing = False
@@ -201,10 +200,7 @@ class Reader:
                                                           refseqid))   
         self.line_printer('Transcript: %s - Protein: %s' % (rep_nm, np))
         self.line_printer(' ')
-        if self.file_type == 'lrg':
-            self.line_printer('LRG: %s - Date : \\today' % self.filename)
-        else:
-            self.line_printer('Date : \\today')
+        self.line_printer('Date : \\today')
         self.print_pdfinfo()  
         self.line_printer('\\end{large}')
         self.line_printer('\\end{center}')
@@ -527,13 +523,12 @@ class Reader:
                 output = ' '
         return output, amino_wait, codon_numbered, amino_acid_counter
 
-    def run(self, dictionary, transcript, write_as_latex, list_of_versions, print_clashes, file_type, filename, username):
+    def run(self, dictionary, transcript, write_as_latex, list_of_versions, print_clashes, file_type, username):
         print 'Transcript: ' + str(transcript)
         print 'Exon numbers: ' + str(dictionary['transcripts'][transcript]['list_of_exons'])
         self.username = username
         self.list_of_versions = list_of_versions
         self.transcriptdict = dictionary
-        self.filename = filename
         self.write_as_LaTex = write_as_latex
         self.transcript = transcript
         self.print_clashes = print_clashes
