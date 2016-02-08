@@ -7,3 +7,7 @@ This is a web-platform port of the reference sequence generator application, ava
 The app currently features no login-control, and has not been designed with security in mind, as it is to be locally available to users within the trust network only. 
 
 The repo contains a req.txt requirements file, built using conda. Build a new environment for this project using $ conda create -n new environment --file req.txt
+
+---
+
+Conda will install most of the requirements, but will still lack LaTeX/pdflatex. This can be installed via TexLive (comprehensive installation) or MIKTEX (smaller distribution, core packages with ability to extend installation. Not tested)
