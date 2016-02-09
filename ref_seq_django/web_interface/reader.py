@@ -433,16 +433,11 @@ class Reader:
                             pass
                         else:
                             index = pos1+pos2+pos3
-                            try:
-                                if self.codon_table[index] != next_amino_string:
-                                    print 'There is an error with the amino acid - codon pairing in exon %s: %s - %s, AA# %s' % (str(check_next_exon), index, next_amino_string, str(amino_acid_counter))
-                                    print 'Base 3 position = %s' % str(check_position)
-                                    print 'Next few: %s' % check_sequence[check_position+1:check_position+5]
-                                    this = raw_input()
-                            except KeyError:
-                                print "The key '%s' does not have a codon entry: %s"\
-                                            % (index, self.transcriptdict['genename'])
-                                print dna_string
+                            if self.codon_table[index] != next_amino_string:
+                                raise Exception
+                                print 'There is an error with the amino acid - codon pairing in exon %s: %s - %s, AA# %s' % (str(check_next_exon), index, next_amino_string, str(amino_acid_counter))
+                                print 'Base 3 position = %s' % str(check_position)
+                                print 'Next few: %s' % check_sequence[check_position+1:check_position+5]
 
                     (next_amino_number, amino_wait, codon_numbered,
                      amino_acid_counter) = self.decide_amino_number_string_character(amino_wait, codon_numbered,

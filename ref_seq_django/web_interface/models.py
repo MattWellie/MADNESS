@@ -1,6 +1,6 @@
 from django.db import models
+import sys, os
 
-# Create your models here.
 
 class created_documents(models.Model):
     gene = models.TextField()

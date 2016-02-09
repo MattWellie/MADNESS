@@ -2,6 +2,10 @@
 <h1>RefSeq application - Web interface</h1>
 
 
+{% if error_message %}
+    {{ error_message }}
+{% endif %}
+
 <li>Create a new reference?</li>
 <br>
 <form enctype="multipart/form-data"  action="/web_interface/upload/" method="post">
